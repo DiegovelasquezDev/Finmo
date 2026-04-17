@@ -1,0 +1,16 @@
+{
+  "services": [
+    {
+      "name": "backend",
+      "root": "server",
+      "buildCommand": "npm install",
+      "startCommand": "npm start"
+    },
+    {
+      "name": "frontend",
+      "root": "client",
+      "buildCommand": "npm install && npm run build",
+      "startCommand": "npm run preview"
+    }
+  ]
+}
