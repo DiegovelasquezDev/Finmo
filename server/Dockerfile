@@ -2,15 +2,15 @@
 FROM node:20-alpine AS base
 WORKDIR /app
 
-# Instala dependencias
+# Copia package.json y la carpeta prisma antes de instalar dependencias
 COPY package*.json ./
+COPY prisma ./prisma
+
 RUN npm install --omit=dev
 
 # Copia el resto del código
 COPY . .
 
-# Expone el puerto (usa variable de entorno)
 EXPOSE 3000
 
-# Comando de inicio
 CMD ["npm", "start"]
