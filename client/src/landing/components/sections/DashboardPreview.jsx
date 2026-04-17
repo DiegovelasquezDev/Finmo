@@ -66,7 +66,7 @@ function FullDashboard() {
         {/* Main content */}
         <div className="flex-1 p-5 flex flex-col gap-5 overflow-hidden">
           {/* KPIs */}
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
               { label: 'Net Balance',    value: '$4,280', tag: '↑ 2.4%', tagColor: '#10b981', tagBg: 'var(--color-success-light)' },
               { label: 'Monthly Spend',  value: '$1,892', tag: '↓ 8.1%', tagColor: '#10b981', tagBg: 'var(--color-success-light)' },

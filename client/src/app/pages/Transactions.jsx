@@ -330,7 +330,7 @@ export default function Transactions() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
           { label: t('app.transactions.income'),   value: income,   color: '#10b981', type: 'INCOME' },
           { label: t('app.transactions.expenses'),  value: expenses, color: '#ef4444', type: 'EXPENSE' },
@@ -346,9 +346,9 @@ export default function Transactions() {
       </div>
 
       {/* Filters + search */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="flex rounded-xl overflow-hidden border border-[var(--border)] text-sm font-medium">
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+          <div className="flex rounded-xl overflow-x-auto border border-[var(--border)] text-sm font-medium">
             {[
               { key: 'all',     label: t('app.transactions.filterAll') },
               { key: 'income',  label: t('app.transactions.filterIncome') },

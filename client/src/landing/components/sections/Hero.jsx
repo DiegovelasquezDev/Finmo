@@ -20,9 +20,9 @@ function DashboardMockup() {
           </div>
         </div>
 
-        <div className="p-5 grid grid-cols-12 gap-4">
+        <div className="p-5 grid grid-cols-1 sm:grid-cols-12 gap-4">
           {/* Sidebar */}
-          <div className="col-span-3 flex flex-col gap-3">
+          <div className="hidden sm:flex sm:col-span-3 flex-col gap-3">
             <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-[var(--accent-subtle)]">
               <div className="w-3 h-3 rounded-sm bg-[var(--accent)]" />
               <span className="text-[10px] font-semibold text-[var(--accent)]">Dashboard</span>
@@ -36,8 +36,8 @@ function DashboardMockup() {
           </div>
 
           {/* Content */}
-          <div className="col-span-9 flex flex-col gap-4">
-            <div className="grid grid-cols-3 gap-3">
+          <div className="sm:col-span-9 flex flex-col gap-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
               {[
                 { label: 'Balance',  value: '$4,280', change: '+2.4%', positive: true },
                 { label: 'Expenses', value: '$1,340', change: '-8.1%', positive: true },

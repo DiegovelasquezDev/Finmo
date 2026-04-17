@@ -220,9 +220,9 @@ export default function Analysis() {
 
       {/* Weekly pattern */}
       <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5">
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
           <p className="text-sm font-semibold text-[var(--fg)]">{t('app.analysis.patternsTitle')}</p>
-          <div className="flex items-center gap-4 text-xs text-[var(--fg-muted)]">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-[var(--fg-muted)]">
             <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#ef4444]" />Peak day</span>
             <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#f59e0b]" />Elevated</span>
             <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#5d4573]" />Normal</span>
@@ -239,8 +239,8 @@ export default function Analysis() {
         <p className="text-sm font-semibold text-[var(--fg)] mb-5">{t('app.analysis.categoryTitle')}</p>
         <div className="flex flex-col gap-4">
           {categories.map(cat => (
-            <div key={cat.name} className="flex items-center gap-4">
-              <span className="text-xs font-medium text-[var(--fg-muted)] w-24 shrink-0">{cat.name}</span>
+            <div key={cat.name} className="flex items-center gap-2 sm:gap-4">
+              <span className="text-xs font-medium text-[var(--fg-muted)] w-20 sm:w-24 shrink-0 truncate">{cat.name}</span>
               <div className="flex-1 relative h-6 rounded-lg bg-[var(--surface-raised)] overflow-hidden">
                 <div className="absolute inset-y-0 left-0 rounded-lg transition-all duration-700" style={{ width: `${cat.impulse}%`, background: cat.color + '40' }} />
                 <div className="absolute inset-y-0 left-0 rounded-lg transition-all duration-700" style={{ width: `${cat.impulse * 0.6}%`, background: cat.color + '80' }} />
@@ -248,7 +248,7 @@ export default function Analysis() {
               <span className="text-xs font-bold w-10 text-right shrink-0" style={{ color: cat.impulse > 60 ? '#ef4444' : cat.impulse > 40 ? '#f59e0b' : '#10b981' }}>
                 {cat.impulse}%
               </span>
-              <span className="text-xs text-[var(--fg-subtle)] w-14 text-right shrink-0">{fmtCurrency(cat.total, currency)}</span>
+              <span className="text-xs text-[var(--fg-subtle)] w-14 text-right shrink-0 hidden sm:block">{fmtCurrency(cat.total, currency)}</span>
             </div>
           ))}
         </div>

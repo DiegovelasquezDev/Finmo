@@ -506,7 +506,7 @@ export default function Dashboard() {
 
       {/* Period filter */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-        <div className="flex rounded-xl overflow-hidden border border-[var(--border)] text-sm font-medium">
+        <div className="flex rounded-xl overflow-x-auto border border-[var(--border)] text-sm font-medium">
           {PERIOD_OPTS.map(o => (
             <button key={o.key} onClick={() => setPeriod(o.key)}
               className={`px-3 py-2 transition-colors whitespace-nowrap ${period === o.key ? 'bg-[var(--accent)] text-white' : 'bg-[var(--surface)] text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--surface-raised)]'}`}>
@@ -515,7 +515,7 @@ export default function Dashboard() {
           ))}
         </div>
         {period === 'custom' && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <label className="text-xs text-[var(--fg-muted)]">{t('app.dashboard.periodFrom')}</label>
             <input type="date" value={customFrom} onChange={e => setCustomFrom(e.target.value)}
               className="px-2 py-1.5 rounded-lg bg-[var(--surface)] border border-[var(--border)] text-sm text-[var(--fg)] outline-none focus:border-[var(--accent-border)]" />
