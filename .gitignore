@@ -1,0 +1,45 @@
+# ─── Dependencies ──────────────────────────────────────────
+node_modules/
+
+# ─── Build output ─────────────────────────────────────────
+client/dist/
+client/dist-ssr/
+
+# ─── Environment variables ────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Prisma ───────────────────────────────────────────────
+server/prisma/*.db
+server/prisma/*.db-journal
+
+# ─── Logs ─────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ─── OS files ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ─── Editors / IDEs ───────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*~
+
+# ─── Misc ─────────────────────────────────────────────────
+*.local
+*.tsbuildinfo
+.cache/

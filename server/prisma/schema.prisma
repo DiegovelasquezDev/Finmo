@@ -1,0 +1,369 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────
+// USUARIOS
+// ─────────────────────────────────────────
+
+model User {
+  id                String    @id @default(uuid()) @db.VarChar(36)
+  email             String    @unique @db.VarChar(255)
+  passwordHash      String    @db.VarChar(255)
+  firstName         String    @db.VarChar(100)
+  lastName          String    @db.VarChar(100)
+  avatarUrl         String?   @db.VarChar(500)
+  isVerified        Boolean   @default(false)
+  isActive          Boolean   @default(true)
+  monthlyIncome     Decimal?  @db.Decimal(12, 2)
+  currency          String    @default("COP") @db.VarChar(3)
+  // 0 = no iniciado, 1-4 = paso actual, 5 = completado
+  onboardingStep    Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime?
+
+  // Relations
+  transactions      Transaction[]
+  categories        Category[]
+  goals             Goal[]
+  alerts            Alert[]
+  notifications     Notification[]
+  tokens            Token[]
+  budgets           Budget[]
+  profile           UserProfile?
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────
+// PERFIL FINANCIERO (datos para el modelo IA)
+// ─────────────────────────────────────────
+
+model UserProfile {
+  id                    String   @id @default(uuid()) @db.VarChar(36)
+  userId                String   @unique @db.VarChar(36)
+
+  // ── Datos demográficos ──
+  birthYear             Int?
+  occupation            String?  @db.VarChar(100)
+  educationLevel        EducationLevel?
+  householdSize         Int?     // número de personas en el hogar
+  financialKnowledge    FinancialKnowledge @default(BASIC)
+
+  // ── Situación financiera ──
+  primaryIncomeSource   IncomeSource?
+  hasSecondaryIncome    Boolean  @default(false)
+  secondaryIncomeAmount Decimal? @db.Decimal(12, 2)
+  employmentType        EmploymentType?
+
+  // ── Gastos fijos mensuales ──
+  rentMortgage          Decimal? @db.Decimal(12, 2)  // Arriendo / hipoteca
+  utilities             Decimal? @db.Decimal(12, 2)  // Servicios públicos
+  transportFixed        Decimal? @db.Decimal(12, 2)  // Transporte fijo (bus, gasolina)
+  insurances            Decimal? @db.Decimal(12, 2)  // Seguros
+  subscriptions         Decimal? @db.Decimal(12, 2)  // Suscripciones (Netflix, etc.)
+  loanPayments          Decimal? @db.Decimal(12, 2)  // Cuotas de créditos
+  otherFixed            Decimal? @db.Decimal(12, 2)  // Otros gastos fijos
+
+  // ── Comportamiento financiero (features para IA) ──
+  savingsGoalPct        Int?     // % del ingreso que quiere ahorrar (0-100)
+  hasEmergencyFund      Boolean  @default(false)
+  emergencyFundMonths   Int?     // meses de gastos cubiertos
+  hasDebts              Boolean  @default(false)
+  totalDebtAmount       Decimal? @db.Decimal(12, 2)
+  financialStressLevel  Int?     // 1-5 (1=ninguno, 5=muy alto)
+  spendingBehavior      SpendingBehavior?  // estilo de gasto predominante
+  mainFinancialGoal     FinancialGoalType?
+
+  // ── Preferencias del sistema ──
+  alertBudgetPct        Int      @default(80)   // % del presupuesto para alertar
+  preferredTheme        String   @default("system") @db.VarChar(10)
+  language              String   @default("es") @db.VarChar(5)
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+enum EducationLevel {
+  PRIMARY
+  SECONDARY
+  TECHNICAL
+  UNDERGRADUATE
+  GRADUATE
+  POSTGRADUATE
+}
+
+enum FinancialKnowledge {
+  BASIC       // Solo lo básico
+  INTERMEDIATE // Manejo presupuesto
+  ADVANCED    // Inversiones, portafolios
+}
+
+enum IncomeSource {
+  SALARY
+  FREELANCE
+  BUSINESS
+  INVESTMENTS
+  PENSION
+  MIXED
+  OTHER
+}
+
+enum EmploymentType {
+  EMPLOYED_FULL
+  EMPLOYED_PART
+  SELF_EMPLOYED
+  UNEMPLOYED
+  STUDENT
+  RETIRED
+}
+
+enum SpendingBehavior {
+  SAVER       // Ahorra primero
+  PLANNER     // Presupuesta todo
+  IMPULSIVE   // Gasta sin planear
+  BALANCED    // Equilibrado
+}
+
+enum FinancialGoalType {
+  EMERGENCY_FUND
+  PAY_DEBT
+  SAVE_TRAVEL
+  BUY_PROPERTY
+  RETIREMENT
+  EDUCATION
+  INVESTMENT
+  OTHER
+}
+
+// ─────────────────────────────────────────
+// TOKENS (verificación, reset password, refresh)
+// ─────────────────────────────────────────
+
+model Token {
+  id        String    @id @default(uuid()) @db.VarChar(36)
+  userId    String    @db.VarChar(36)
+  token     String    @unique @db.VarChar(500)
+  type      TokenType
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("tokens")
+}
+
+enum TokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+  REFRESH
+}
+
+// ─────────────────────────────────────────
+// CATEGORÍAS
+// ─────────────────────────────────────────
+
+model Category {
+  id          String          @id @default(uuid()) @db.VarChar(36)
+  userId      String?         @db.VarChar(36)   // null = categoría global del sistema
+  name        String          @db.VarChar(100)
+  icon        String?         @db.VarChar(50)
+  color       String?         @db.VarChar(7)    // hex color
+  type        TransactionType
+  isDefault   Boolean         @default(false)
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  user         User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  budgets      Budget[]
+
+  @@unique([userId, name, type])
+  @@index([userId])
+  @@map("categories")
+}
+
+// ─────────────────────────────────────────
+// TRANSACCIONES (ingresos y gastos)
+// ─────────────────────────────────────────
+
+model Transaction {
+  id          String          @id @default(uuid()) @db.VarChar(36)
+  userId      String          @db.VarChar(36)
+  categoryId  String          @db.VarChar(36)
+  type        TransactionType
+  amount      Decimal         @db.Decimal(12, 2)
+  description String?         @db.VarChar(500)
+  date        DateTime
+  isRecurring Boolean         @default(false)
+  recurrence  Recurrence?
+  tags        String?         @db.VarChar(500)  // JSON array de tags
+  notes       String?         @db.Text
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    Category        @relation(fields: [categoryId], references: [id])
+
+  @@index([userId])
+  @@index([userId, date])
+  @@index([userId, type])
+  @@index([categoryId])
+  @@map("transactions")
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum Recurrence {
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  YEARLY
+}
+
+// ─────────────────────────────────────────
+// PRESUPUESTOS POR CATEGORÍA
+// ─────────────────────────────────────────
+
+model Budget {
+  id         String   @id @default(uuid()) @db.VarChar(36)
+  userId     String   @db.VarChar(36)
+  categoryId String   @db.VarChar(36)
+  amount     Decimal  @db.Decimal(12, 2)
+  period     Period
+  startDate  DateTime
+  endDate    DateTime?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  @@unique([userId, categoryId, period, startDate])
+  @@index([userId])
+  @@map("budgets")
+}
+
+enum Period {
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+// ─────────────────────────────────────────
+// METAS FINANCIERAS
+// ─────────────────────────────────────────
+
+model Goal {
+  id            String     @id @default(uuid()) @db.VarChar(36)
+  userId        String     @db.VarChar(36)
+  name          String     @db.VarChar(200)
+  description   String?    @db.Text
+  targetAmount  Decimal    @db.Decimal(12, 2)
+  currentAmount Decimal    @default(0) @db.Decimal(12, 2)
+  deadline      DateTime?
+  status        GoalStatus @default(ACTIVE)
+  icon          String?    @db.VarChar(50)
+  color         String?    @db.VarChar(7)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("goals")
+}
+
+enum GoalStatus {
+  ACTIVE
+  COMPLETED
+  PAUSED
+  CANCELLED
+}
+
+// ─────────────────────────────────────────
+// ALERTAS
+// ─────────────────────────────────────────
+
+model Alert {
+  id          String      @id @default(uuid()) @db.VarChar(36)
+  userId      String      @db.VarChar(36)
+  type        AlertType
+  title       String      @db.VarChar(200)
+  message     String      @db.Text
+  threshold   Decimal?    @db.Decimal(12, 2)
+  isRead      Boolean     @default(false)
+  isActive    Boolean     @default(true)
+  triggeredAt DateTime    @default(now())
+  readAt      DateTime?
+  metadata    String?     @db.Text  // JSON con datos adicionales
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, isRead])
+  @@map("alerts")
+}
+
+enum AlertType {
+  BUDGET_EXCEEDED       // Presupuesto excedido
+  BUDGET_WARNING        // Cerca del límite (80%)
+  UNUSUAL_EXPENSE       // Gasto inusual detectado
+  GOAL_ACHIEVED         // Meta alcanzada
+  GOAL_DEADLINE         // Fecha límite de meta próxima
+  RECURRING_DUE         // Gasto recurrente próximo
+  NEGATIVE_PATTERN      // Patrón de gasto negativo detectado
+  LOW_INCOME_RATIO      // Ratio ingresos/gastos bajo
+}
+
+// ─────────────────────────────────────────
+// NOTIFICACIONES (recordatorios programados)
+// ─────────────────────────────────────────
+
+model Notification {
+  id          String             @id @default(uuid()) @db.VarChar(36)
+  userId      String             @db.VarChar(36)
+  title       String             @db.VarChar(200)
+  body        String             @db.Text
+  channel     NotificationChannel
+  status      NotificationStatus @default(PENDING)
+  scheduledAt DateTime
+  sentAt      DateTime?
+  createdAt   DateTime           @default(now())
+
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status, scheduledAt])
+  @@map("notifications")
+}
+
+enum NotificationChannel {
+  EMAIL
+  IN_APP
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
