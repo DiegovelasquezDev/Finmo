@@ -10,6 +10,7 @@ import { corsOptions } from './src/configs/cors.js';
 import { generalLimiter } from './src/configs/rate-limit.js';
 import { errorHandler } from './src/middlewares/error-handler.js';
 import { notFoundHandler } from './src/middlewares/not-found.js';
+import { setupSwagger } from './src/configs/swagger.js';
 import mainRouter from './main.routes.js';
 
 const app = express();
@@ -28,6 +29,9 @@ app.use(compression());
 
 // Logging
 app.use(pinoHttp({ logger }));
+
+// Swagger docs
+setupSwagger(app);
 
 // Routes
 app.use('/api', mainRouter);

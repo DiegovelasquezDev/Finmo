@@ -8,8 +8,10 @@ services:
       - "3000:3000"
     depends_on:
       - db
+      - model
     environment:
       - DATABASE_URL=mysql://user:password@db:3306/dbname
+      - MODEL_URL=http://model:8000
   frontend:
     build: ./client
     env_file:
@@ -30,5 +32,13 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+  model:
+    build: ./model
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
 volumes:
   db_data:

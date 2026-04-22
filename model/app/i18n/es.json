@@ -1,0 +1,109 @@
+{
+  "sentiment": {
+    "label_stress": "ESTRES_CRONICO",
+    "label_resilience": "RESILIENCIA",
+    "rec_stress": "Tu estado emocional refleja estrés financiero crónico. Evita tomar decisiones económicas importantes hoy. Considera hablar con alguien de confianza sobre tus preocupaciones.",
+    "rec_resilience": "Reflejas control emocional y resiliencia financiera. Es un buen momento para evaluar tus metas y planificar próximos pasos."
+  },
+  "health": {
+    "rec_high_security": "Tu ratio de gastos fijos es saludable. Tienes capacidad de ahorro e inversión. Aprovéchala.",
+    "rec_balanced": "Estás en equilibrio financiero. Revisa si puedes reducir algún gasto fijo para ganar margen de ahorro.",
+    "rec_high_burden": "Tus gastos fijos consumen más del 50% de tus ingresos. Prioriza reducir deudas y evita nuevos compromisos financieros.",
+    "rec_critical": "Situación crítica: tus gastos superan el 75% de tus ingresos. Es urgente reestructurar tus finanzas. Busca asesoría financiera."
+  },
+  "patterns": {
+    "expense_over_75": "Tus gastos superan el 75% de tus ingresos este período.",
+    "ant_spending": "Gastos hormiga detectados en: {categories}. Muchas transacciones pequeñas que suman un monto significativo.",
+    "unusual_count": "Se detectaron {count} gasto(s) inusualmente altos respecto a tu historial.",
+    "top_category_over_40": "La categoría '{category}' concentra más del 40% de tus ingresos."
+  },
+  "prediction": {
+    "trend_increasing": "CRECIENTE",
+    "trend_stable": "ESTABLE",
+    "trend_decreasing": "DECRECIENTE",
+    "confidence_high": "ALTA",
+    "confidence_medium": "MEDIA",
+    "confidence_low": "BAJA"
+  },
+  "purchase": {
+    "level_low": "IMPACTO_BAJO",
+    "level_medium": "IMPACTO_MEDIO",
+    "level_critical": "IMPACTO_CRITICO",
+    "rec_low": "'{product}' representa solo el {pct}% de tus ingresos. Puedes considerarlo sin afectar tu estabilidad financiera.",
+    "rec_medium": "'{product}' representa el {pct}% de tus ingresos. Evalúa si es una necesidad real y si puedes diferirlo o financiarlo sin intereses.",
+    "rec_critical": "'{product}' representa el {pct}% de tus ingresos. Este gasto puede comprometer tu estabilidad financiera. Considera postponerlo o buscar una alternativa más económica.",
+    "rec_financed_low": "Financiar '{product}' a {months} meses te costaría ${monthly_pmt}/mes ({pct}% de tu ingreso). Costo total: ${total_cost} (intereses: ${total_interest}). Es manejable dentro de tu presupuesto.",
+    "rec_financed_medium": "Financiar '{product}' a {months} meses serían ${monthly_pmt}/mes ({pct}% de tu ingreso). Costo total: ${total_cost} (intereses: ${total_interest}). Evalúa si puedes mantener esta cuota cómodamente junto a tus otros gastos fijos.",
+    "rec_financed_critical": "Financiar '{product}' a {months} meses serían ${monthly_pmt}/mes ({pct}% de tu ingreso). Costo total: ${total_cost} (intereses: ${total_interest}). Esta cuota mensual puede comprometer tu estabilidad. Considera un plazo más largo, un enganche mayor o una alternativa más económica."
+  },
+  "profile": {
+    "archetypes": {
+      "IMPULSIVO": {
+        "emoji": "🦁",
+        "name": "El Impulsivo",
+        "description": "Gastas con frecuencia en pequeñas cantidades sin un patrón claro. El dinero sale rápido y a veces sin darte cuenta.",
+        "strengths": "Disfrutas el presente y eres generoso/a.",
+        "risk": "Los gastos pequeños se acumulan y al final del mes no sabes en qué fue.",
+        "tip": "Prueba la regla de las 24 horas: antes de cualquier compra no esencial, espera un día."
+      },
+      "CONSERVADOR": {
+        "emoji": "🐢",
+        "name": "El Conservador",
+        "description": "Gastas poco y controlas bien tus egresos, pero tus ingresos tampoco crecen mucho. Tu dinero está seguro pero no trabaja para ti.",
+        "strengths": "Tienes disciplina y evitas deudas innecesarias.",
+        "risk": "La inflación erosiona tus ahorros si no los inviertes.",
+        "tip": "Separa automáticamente el 10% de cada ingreso a una cuenta de inversión."
+      },
+      "PLANIFICADOR": {
+        "emoji": "🦊",
+        "name": "El Planificador",
+        "description": "Tus ingresos y gastos son predecibles y consistentes. Tienes control real sobre tus finanzas.",
+        "strengths": "Estabilidad, previsión y capacidad de ahorro consistente.",
+        "risk": "Puedes caer en la zona de confort y perder oportunidades de crecimiento.",
+        "tip": "Con tu estabilidad ya lograda, explora fondos de inversión de bajo riesgo."
+      },
+      "VOLATIL": {
+        "emoji": "🦋",
+        "name": "El Volátil",
+        "description": "Tienes meses muy buenos y meses muy malos sin un patrón claro. Tu flujo de caja es impredecible.",
+        "strengths": "Capacidad de adaptación y flexibilidad.",
+        "risk": "La irregularidad hace difícil planificar metas a mediano plazo.",
+        "tip": "Crea un fondo de nivelación: en los meses buenos, guarda el 20% extra."
+      },
+      "ENDEUDADO": {
+        "emoji": "⚠️",
+        "name": "En Zona de Riesgo",
+        "description": "Tus gastos están superando o rozando tus ingresos de forma recurrente. Es urgente tomar acción.",
+        "strengths": "Reconocer el problema es el primer paso.",
+        "risk": "Sin ajustes, la deuda puede escalar rápidamente.",
+        "tip": "Lista todas tus deudas de menor a mayor y enfócate en eliminar la más pequeña primero (método bola de nieve)."
+      }
+    },
+    "score_labels": {
+      "excellent": "Excelente",
+      "good": "Bueno",
+      "regular": "Regular",
+      "at_risk": "En riesgo",
+      "critical": "Crítico"
+    },
+    "day_names": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+    "insights": {
+      "spike_day": "Los {day}s gastas en promedio {multiplier}x más que el resto de la semana. Es tu día de mayor riesgo de gasto impulsivo.",
+      "ant_spending": "En {categories} tienes muchos gastos pequeños que suman más de lo que parece. Estos 'gastos hormiga' pueden representar hasta el 15% de tu ingreso sin que lo notes.",
+      "low_savings": "Tus gastos y tus ingresos están muy equilibrados, pero casi no queda margen de ahorro. Con pequeños ajustes podrías empezar a guardar algo cada mes.",
+      "high_volatility": "Tus gastos varían mucho entre meses: tu mejor mes fue {best_month} y tu peor mes fue {worst_month}. Esta irregularidad dificulta planificar.",
+      "spending_increase": "Este mes gastaste un 20% más que el mes anterior. Revisa qué categoría disparó el aumento."
+    }
+  },
+  "concerns": {
+    "categories": {
+      "DEBT": "Deudas",
+      "SAVINGS": "Ahorro",
+      "ANT_SPENDING": "Gastos Hormiga",
+      "INSURANCE": "Seguros",
+      "INVESTMENT": "Inversión",
+      "RETIREMENT": "Jubilación",
+      "OTHER": "Otro"
+    }
+  }
+}

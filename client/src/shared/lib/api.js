@@ -22,9 +22,11 @@ async function refreshTokens() {
 
 async function request(path, options = {}) {
   const accessToken = localStorage.getItem('finmo-access-token')
+  const lang = localStorage.getItem('finmo-lang') || 'es'
 
   const headers = {
     'Content-Type': 'application/json',
+    'Accept-Language': lang,
     ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
     ...options.headers,
   }

@@ -37,6 +37,7 @@ model User {
   tokens            Token[]
   budgets           Budget[]
   profile           UserProfile?
+  scoreSnapshots    ScoreSnapshot[]
 
   @@map("users")
 }
@@ -366,4 +367,21 @@ enum NotificationStatus {
   PENDING
   SENT
   FAILED
+}
+
+// ─────────────────────────────────────────
+// SNAPSHOTS DE SCORE FINANCIERO
+// ─────────────────────────────────────────
+
+model ScoreSnapshot {
+  id           String   @id @default(uuid()) @db.VarChar(36)
+  userId       String   @db.VarChar(36)
+  score        Int
+  archetypeKey String   @db.VarChar(50)
+  createdAt    DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("score_snapshots")
 }

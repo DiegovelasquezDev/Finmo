@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSearchParams } from 'react-router-dom'
 import { api } from '../../shared/lib/api'
 import { useAuth } from '../../shared/context/AuthContext'
 import { fmtCurrency, currencySymbol } from '../../shared/lib/format'
@@ -123,18 +124,19 @@ function GoalCard({ goal, onContribute, onEdit, onDelete, onTogglePause, currenc
 }
 
 /* ── Create / Edit modal ─────────────────────────────────────────────────────── */
-function GoalModal({ onClose, onSaved, editGoal = null }) {
+function GoalModal({ onClose, onSaved, editGoal = null, prefill = null }) {
   const { t } = useTranslation()
   const ICONS  = ['🎯', '✈️', '🏠', '💻', '🛡️', '💍', '🚗', '📚', '💊', '🎓', '🏖️', '💰', '🏋️', '🎸', '🌍']
   const COLORS = ['#5d4573', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#ef4444', '#8b5cf6', '#06b6d4']
 
+  const src = editGoal ?? prefill
   const [form, setForm] = useState({
-    name:         editGoal?.name ?? '',
+    name:         src?.name ?? '',
     targetAmount: editGoal ? String(editGoal.targetAmount) : '',
     deadline:     editGoal?.deadline ? new Date(editGoal.deadline).toISOString().slice(0, 10) : '',
-    icon:         editGoal?.icon  ?? '🎯',
+    icon:         src?.icon  ?? '🎯',
     color:        editGoal?.color ?? '#5d4573',
-    description:  editGoal?.description ?? '',
+    description:  src?.description ?? '',
   })
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState('')
@@ -329,11 +331,27 @@ function DeleteModal({ goal, onConfirm, onCancel, loading }) {
 export default function Goals() {
   const { t } = useTranslation()
   const { user } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
   const currency = user?.currency ?? 'COP'
   const [goals,       setGoals]       = useState([])
   const [loading,     setLoading]     = useState(true)
   const [showModal,   setShowModal]   = useState(false)
   const [editGoal,    setEditGoal]    = useState(null)
+  const [prefill,     setPrefill]     = useState(null)
+
+  // Auto-open create modal from URL params (e.g. from Analysis archetype CTA)
+  useEffect(() => {
+    if (searchParams.get('create') === '1') {
+      const pf = {}
+      if (searchParams.get('name'))        pf.name = searchParams.get('name')
+      if (searchParams.get('icon'))        pf.icon = searchParams.get('icon')
+      if (searchParams.get('description')) pf.description = searchParams.get('description')
+      setPrefill(Object.keys(pf).length > 0 ? pf : null)
+      setEditGoal(null)
+      setShowModal(true)
+      setSearchParams({}, { replace: true })
+    }
+  }, [searchParams, setSearchParams])
   const [contributeGoal, setContributeGoal] = useState(null)
   const [deleteGoal,  setDeleteGoal]  = useState(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
@@ -418,7 +436,7 @@ export default function Goals() {
           <h1 className="text-xl font-bold text-[var(--fg)]">{t('app.goals.title')}</h1>
           <p className="text-sm text-[var(--fg-muted)] mt-0.5">{t('app.goals.subtitle')}</p>
         </div>
-        <button onClick={() => { setEditGoal(null); setShowModal(true) }}
+        <button onClick={() => { setEditGoal(null); setPrefill(null); setShowModal(true) }}
           className="self-start sm:self-auto flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-sm font-semibold transition-colors shadow-sm">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
@@ -573,9 +591,10 @@ export default function Goals() {
       {showModal && (
         <GoalModal
           key={editGoal?.id ?? 'new'}
-          onClose={() => { setShowModal(false); setEditGoal(null) }}
+          onClose={() => { setShowModal(false); setEditGoal(null); setPrefill(null) }}
           onSaved={fetchGoals}
           editGoal={editGoal}
+          prefill={prefill}
         />
       )}
       {contributeGoal && (

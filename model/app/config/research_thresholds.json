@@ -1,0 +1,9 @@
+{
+  "source": "Zhu (2022), N=264",
+  "thresholds": {
+    "Deudas": 65,
+    "Ahorro": 25,
+    "Gastos Hormiga": 15,
+    "Seguros": 10
+  }
+}

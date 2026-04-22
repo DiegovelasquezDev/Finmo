@@ -351,6 +351,161 @@ function RecentTxCard({ txs, loading, currency }) {
   )
 }
 
+/* ── Welcome onboarding card ───────────────────────────────────────────── */
+function WelcomeOnboarding({ name }) {
+  const navigate = useNavigate()
+
+  const STEPS = [
+    {
+      icon: '💸',
+      title: 'Registra tu primera transacción',
+      desc: 'Agrega un ingreso o gasto para comenzar a ver tus finanzas.',
+      action: () => navigate('/app/transactions'),
+      btn: 'Ir a transacciones',
+    },
+    {
+      icon: '🎯',
+      title: 'Crea una meta financiera',
+      desc: 'Define un objetivo de ahorro para mantenerte motivado.',
+      action: () => navigate('/app/goals'),
+      btn: 'Crear meta',
+    },
+    {
+      icon: '📊',
+      title: 'Explora tu análisis',
+      desc: 'Con datos suficientes, la IA analizará tu perfil financiero.',
+      action: () => navigate('/app/analysis'),
+      btn: 'Ver análisis',
+    },
+  ]
+
+  return (
+    <div className="bg-gradient-to-br from-[var(--accent)]/8 to-[var(--surface)] border border-[var(--accent-border)] rounded-2xl p-6 sm:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+        <span className="text-5xl">🚀</span>
+        <div>
+          <h2 className="text-lg font-bold text-[var(--fg)]">
+            ¡Bienvenido{name ? `, ${name}` : ''}! Comienza tu viaje financiero
+          </h2>
+          <p className="text-sm text-[var(--fg-muted)] mt-1">
+            Sigue estos 3 pasos para sacarle el máximo provecho a Finmo.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {STEPS.map((step, i) => (
+          <div key={i} className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 flex flex-col gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-[var(--accent-subtle)] flex items-center justify-center text-lg">
+                {step.icon}
+              </div>
+              <span className="text-xs font-bold text-[var(--fg-subtle)]">Paso {i + 1}</span>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-[var(--fg)]">{step.title}</p>
+              <p className="text-xs text-[var(--fg-muted)] mt-0.5 leading-relaxed">{step.desc}</p>
+            </div>
+            <button onClick={step.action}
+              className="mt-auto w-full py-2 rounded-lg border border-[var(--accent-border)] text-[var(--accent)] text-xs font-semibold hover:bg-[var(--accent-subtle)] transition-colors">
+              {step.btn}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ── Score evolution card (mini) ──────────────────────────────────────────── */
+function ScoreCard({ profile, history, loading }) {
+  const navigate = useNavigate()
+
+  if (loading) return (
+    <Card className="p-5">
+      <Skeleton className="h-4 w-32 mb-3" />
+      <div className="flex items-center gap-4">
+        <Skeleton className="h-16 w-16 rounded-full" />
+        <div className="flex-1 flex flex-col gap-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-3 w-36" />
+        </div>
+      </div>
+    </Card>
+  )
+
+  if (!profile) return null
+
+  const score = profile.score
+  const color = score >= 80 ? '#10b981' : score >= 65 ? '#3b82f6' : score >= 45 ? '#f59e0b' : score >= 25 ? '#f97316' : '#ef4444'
+
+  // Trend from history
+  let trendArrow = '→', trendColor = '#6b7280', trendDiff = 0
+  if (history && history.length >= 2) {
+    const prev = history[history.length - 2].score
+    trendDiff = score - prev
+    trendArrow = trendDiff > 0 ? '↑' : trendDiff < 0 ? '↓' : '→'
+    trendColor = trendDiff > 0 ? '#10b981' : trendDiff < 0 ? '#ef4444' : '#6b7280'
+  }
+
+  // Mini sparkline
+  const showSpark = history && history.length >= 2
+  const sparkW = 80, sparkH = 28, px = 2, py = 2
+  let sparkPoints = ''
+  if (showSpark) {
+    const scores = history.map(h => h.score)
+    const min = Math.min(...scores), max = Math.max(...scores)
+    const range = max - min || 1
+    sparkPoints = scores.map((s, i) => {
+      const x = px + (i / (scores.length - 1)) * (sparkW - px * 2)
+      const y = py + (1 - (s - min) / range) * (sparkH - py * 2)
+      return `${x},${y}`
+    }).join(' ')
+  }
+
+  return (
+    <Card className="p-5 cursor-pointer hover:border-[var(--accent-border)] transition-colors" onClick={() => navigate('/app/analysis')}>
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-sm font-semibold text-[var(--fg)]">Score financiero</p>
+        <span className="text-[10px] text-[var(--fg-subtle)]">Ver análisis →</span>
+      </div>
+
+      <div className="flex items-center gap-4">
+        {/* Mini ring */}
+        <div className="relative shrink-0" style={{ width: 56, height: 56 }}>
+          <svg width="56" height="56" className="rotate-[-90deg] absolute">
+            <circle cx="28" cy="28" r="22" fill="none" stroke="var(--surface-overlay)" strokeWidth="6" />
+            <circle cx="28" cy="28" r="22" fill="none" stroke={color} strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray={`${(score / 100) * 2 * Math.PI * 22} ${2 * Math.PI * 22}`}
+              style={{ transition: 'stroke-dasharray 1s ease' }} />
+          </svg>
+          <span className="absolute inset-0 flex items-center justify-center text-base font-black" style={{ color }}>{score}</span>
+        </div>
+
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="text-base">{profile.archetype_emoji}</span>
+            <p className="text-xs font-bold text-[var(--fg)] truncate">{profile.archetype_name}</p>
+          </div>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-xs font-bold" style={{ color: trendColor }}>
+              {trendArrow} {trendDiff > 0 ? '+' : ''}{trendDiff}
+            </span>
+            {showSpark && (
+              <svg width={sparkW} height={sparkH} className="overflow-visible">
+                <polyline fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" points={sparkPoints} opacity="0.5" />
+              </svg>
+            )}
+          </div>
+          <p className="text-[10px] text-[var(--fg-subtle)] mt-0.5 truncate">{profile.archetype_tip}</p>
+        </div>
+      </div>
+    </Card>
+  )
+}
+
 /* ── Period helpers ───────────────────────────────────────────────────────── */
 function getDateRange(period) {
   const now = new Date()
@@ -384,6 +539,8 @@ export default function Dashboard() {
   const { isDark } = useTheme()
   const [summary, setSummary] = useState(null)
   const [trend,   setTrend]   = useState([])
+  const [profile, setProfile] = useState(null)
+  const [scoreHistory, setScoreHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [period,  setPeriod]  = useState('month')
   const [customFrom, setCustomFrom] = useState('')
@@ -413,12 +570,16 @@ export default function Dashboard() {
       if (range.endDate)   trendParams.set('endDate',   range.endDate)
       if (!range.startDate) trendParams.set('months', '6')
 
-      const [sumRes, trendRes] = await Promise.all([
+      const [sumRes, trendRes, profRes, histRes] = await Promise.allSettled([
         api.get(`/dashboard/summary?${sumParams}`),
         api.get(`/dashboard/monthly-trend?${trendParams}`),
+        api.get('/analysis/profile'),
+        api.get('/analysis/score-history'),
       ])
-      setSummary(sumRes.data ?? null)
-      setTrend(trendRes.data?.trend ?? [])
+      if (sumRes.status  === 'fulfilled') setSummary(sumRes.value.data ?? null)
+      if (trendRes.status === 'fulfilled') setTrend(trendRes.value.data?.trend ?? [])
+      if (profRes.status === 'fulfilled') setProfile(profRes.value.data)
+      if (histRes.status === 'fulfilled') setScoreHistory(histRes.value.data)
     } catch {
       // show empty state
     } finally {
@@ -494,6 +655,10 @@ export default function Dashboard() {
 
   const greeting = user?.firstName ? `${t('app.dashboard.greeting')}, ${user.firstName} 👋` : `${t('app.dashboard.greeting')} 👋`
 
+  // Detect truly empty dashboard (no transactions ever recorded in this period)
+  const hasNoData = !loading && summary && (summary.totals?.income ?? 0) === 0 && (summary.totals?.expense ?? 0) === 0
+    && (summary.recentTransactions ?? []).length === 0
+
   return (
     <div className="flex flex-col gap-6">
       {/* Page header */}
@@ -503,6 +668,9 @@ export default function Dashboard() {
           <p className="text-sm text-[var(--fg-muted)] mt-0.5">{t('app.dashboard.greetingSub')}</p>
         </div>
       </div>
+
+      {/* Welcome onboarding for new users */}
+      {hasNoData && <WelcomeOnboarding name={user?.firstName} />}
 
       {/* Period filter */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -538,6 +706,7 @@ export default function Dashboard() {
           <RecentTxCard txs={summary?.recentTransactions ?? []} loading={loading} currency={currency} />
         </div>
         <div className="flex flex-col gap-5">
+          <ScoreCard profile={profile} history={scoreHistory} loading={loading} />
           <CategoriesCard cats={summary?.topExpenseCategories ?? []} loading={loading} currency={currency} isDark={isDark} />
           <GoalsCard goals={summary?.goalsProgress ?? []} loading={loading} currency={currency} />
         </div>

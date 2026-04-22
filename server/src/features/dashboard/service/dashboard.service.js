@@ -1,4 +1,14 @@
 import { prisma } from '../../../configs/prisma.js';
+import { modelClient } from '../../../configs/model.js';
+
+function toModelTransactions(transactions) {
+  return transactions.map((t) => ({
+    amount: Number(t.amount),
+    type: t.type,
+    category: t.category?.name ?? 'Sin categoría',
+    date: t.date.toISOString().slice(0, 10),
+  }));
+}
 
 export async function getSummary(userId, { startDate, endDate } = {}) {
   const now = new Date();
@@ -52,6 +62,39 @@ export async function getSummary(userId, { startDate, endDate } = {}) {
     total: Number(t._sum.amount ?? 0),
   }));
 
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      monthlyIncome: true,
+      profile: {
+        select: {
+          rentMortgage: true, utilities: true, transportFixed: true,
+          insurances: true, subscriptions: true, loanPayments: true, otherFixed: true,
+        },
+      },
+    },
+  });
+
+  const monthlyIncome = Number(user?.monthlyIncome ?? 0);
+  const p = user?.profile;
+  const fixedExpenses = p
+    ? [p.rentMortgage, p.utilities, p.transportFixed, p.insurances, p.subscriptions, p.loanPayments, p.otherFixed]
+        .reduce((sum, v) => sum + Number(v ?? 0), 0)
+    : totalExpense;
+
+  // Run model analyses in parallel; degrade gracefully if model is unavailable
+  const [spendingPattern, prediction, financialHealth] = await Promise.allSettled([
+    recentTransactions.length > 0
+      ? modelClient.spendingPattern(toModelTransactions(recentTransactions), monthlyIncome)
+      : Promise.resolve(null),
+    recentTransactions.length > 0
+      ? modelClient.predictExpenses(toModelTransactions(recentTransactions), 1)
+      : Promise.resolve(null),
+    monthlyIncome > 0
+      ? modelClient.financialHealth(monthlyIncome, fixedExpenses > 0 ? fixedExpenses : totalExpense)
+      : Promise.resolve(null),
+  ]);
+
   return {
     period: { start, end },
     totals: { income: totalIncome, expense: totalExpense, balance, savingsRate: Number(savingsRate) },
@@ -63,6 +106,11 @@ export async function getSummary(userId, { startDate, endDate } = {}) {
       currentAmount: Number(g.currentAmount),
       progress: g.targetAmount > 0 ? ((Number(g.currentAmount) / Number(g.targetAmount)) * 100).toFixed(1) : 0,
     })),
+    insights: {
+      spendingPattern: spendingPattern.status === 'fulfilled' ? spendingPattern.value : null,
+      prediction: prediction.status === 'fulfilled' ? prediction.value : null,
+      financialHealth: financialHealth.status === 'fulfilled' ? financialHealth.value : null,
+    },
   };
 }
 

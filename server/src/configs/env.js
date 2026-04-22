@@ -20,6 +20,7 @@ const schema = z.object({
 
   REDIS_URL: z.string().optional(),
   BCRYPT_ROUNDS: z.coerce.number().default(12),
+  MODEL_URL: z.string().default('http://localhost:8000'),
 });
 
 const parsed = schema.safeParse(process.env);

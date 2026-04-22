@@ -1,0 +1,109 @@
+{
+  "sentiment": {
+    "label_stress": "CHRONIC_STRESS",
+    "label_resilience": "RESILIENCE",
+    "rec_stress": "Your emotional state reflects chronic financial stress. Avoid making important financial decisions today. Consider talking to someone you trust about your concerns.",
+    "rec_resilience": "You reflect emotional control and financial resilience. It's a good time to evaluate your goals and plan next steps."
+  },
+  "health": {
+    "rec_high_security": "Your fixed expense ratio is healthy. You have savings and investment capacity. Take advantage of it.",
+    "rec_balanced": "You are in financial balance. Check if you can reduce any fixed expense to gain savings margin.",
+    "rec_high_burden": "Your fixed expenses consume more than 50% of your income. Prioritize reducing debts and avoid new financial commitments.",
+    "rec_critical": "Critical situation: your expenses exceed 75% of your income. It is urgent to restructure your finances. Seek financial advice."
+  },
+  "patterns": {
+    "expense_over_75": "Your expenses exceed 75% of your income this period.",
+    "ant_spending": "Ant spending detected in: {categories}. Many small transactions that add up to a significant amount.",
+    "unusual_count": "{count} unusually high expense(s) detected compared to your history.",
+    "top_category_over_40": "The category '{category}' concentrates more than 40% of your income."
+  },
+  "prediction": {
+    "trend_increasing": "INCREASING",
+    "trend_stable": "STABLE",
+    "trend_decreasing": "DECREASING",
+    "confidence_high": "HIGH",
+    "confidence_medium": "MEDIUM",
+    "confidence_low": "LOW"
+  },
+  "purchase": {
+    "level_low": "LOW_IMPACT",
+    "level_medium": "MEDIUM_IMPACT",
+    "level_critical": "CRITICAL_IMPACT",
+    "rec_low": "'{product}' represents only {pct}% of your income. You can consider it without affecting your financial stability.",
+    "rec_medium": "'{product}' represents {pct}% of your income. Evaluate if it is a real need and if you can defer or finance it without interest.",
+    "rec_critical": "'{product}' represents {pct}% of your income. This expense could compromise your financial stability. Consider postponing it or finding a more affordable alternative.",
+    "rec_financed_low": "Financing '{product}' over {months} months would cost ${monthly_pmt}/mo ({pct}% of your income). Total cost: ${total_cost} (interest: ${total_interest}). This is manageable within your budget.",
+    "rec_financed_medium": "Financing '{product}' over {months} months would be ${monthly_pmt}/mo ({pct}% of your income). Total cost: ${total_cost} (interest: ${total_interest}). Evaluate if you can comfortably maintain this payment alongside your other fixed expenses.",
+    "rec_financed_critical": "Financing '{product}' over {months} months would be ${monthly_pmt}/mo ({pct}% of your income). Total cost: ${total_cost} (interest: ${total_interest}). This monthly payment could compromise your stability. Consider a longer term, larger down payment, or a more affordable alternative."
+  },
+  "profile": {
+    "archetypes": {
+      "IMPULSIVO": {
+        "emoji": "🦁",
+        "name": "The Impulsive",
+        "description": "You spend frequently in small amounts without a clear pattern. Money goes out fast and sometimes without you noticing.",
+        "strengths": "You enjoy the present and are generous.",
+        "risk": "Small expenses add up and by the end of the month you don't know where the money went.",
+        "tip": "Try the 24-hour rule: before any non-essential purchase, wait one day."
+      },
+      "CONSERVADOR": {
+        "emoji": "🐢",
+        "name": "The Conservative",
+        "description": "You spend little and control your expenses well, but your income doesn't grow much either. Your money is safe but not working for you.",
+        "strengths": "You have discipline and avoid unnecessary debts.",
+        "risk": "Inflation erodes your savings if you don't invest them.",
+        "tip": "Automatically set aside 10% of each income into an investment account."
+      },
+      "PLANIFICADOR": {
+        "emoji": "🦊",
+        "name": "The Planner",
+        "description": "Your income and expenses are predictable and consistent. You have real control over your finances.",
+        "strengths": "Stability, foresight and consistent savings ability.",
+        "risk": "You might fall into a comfort zone and miss growth opportunities.",
+        "tip": "With your stability already achieved, explore low-risk investment funds."
+      },
+      "VOLATIL": {
+        "emoji": "🦋",
+        "name": "The Volatile",
+        "description": "You have very good months and very bad months without a clear pattern. Your cash flow is unpredictable.",
+        "strengths": "Adaptability and flexibility.",
+        "risk": "Irregularity makes it difficult to plan medium-term goals.",
+        "tip": "Create a leveling fund: in good months, save an extra 20%."
+      },
+      "ENDEUDADO": {
+        "emoji": "⚠️",
+        "name": "At Risk Zone",
+        "description": "Your expenses are exceeding or touching your income on a recurring basis. It is urgent to take action.",
+        "strengths": "Recognizing the problem is the first step.",
+        "risk": "Without adjustments, debt can escalate quickly.",
+        "tip": "List all your debts from smallest to largest and focus on eliminating the smallest first (snowball method)."
+      }
+    },
+    "score_labels": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "regular": "Fair",
+      "at_risk": "At Risk",
+      "critical": "Critical"
+    },
+    "day_names": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "insights": {
+      "spike_day": "On {day}s you spend on average {multiplier}x more than the rest of the week. It's your highest risk day for impulse spending.",
+      "ant_spending": "In {categories} you have many small expenses that add up to more than it seems. These 'ant expenses' can represent up to 15% of your income without you noticing.",
+      "low_savings": "Your expenses and income are very balanced, but there is almost no savings margin. With small adjustments you could start saving something each month.",
+      "high_volatility": "Your expenses vary a lot between months: your best month was {best_month} and your worst month was {worst_month}. This irregularity makes planning difficult.",
+      "spending_increase": "This month you spent 20% more than the previous month. Check which category triggered the increase."
+    }
+  },
+  "concerns": {
+    "categories": {
+      "DEBT": "Debt",
+      "SAVINGS": "Savings",
+      "ANT_SPENDING": "Ant Spending",
+      "INSURANCE": "Insurance",
+      "INVESTMENT": "Investment",
+      "RETIREMENT": "Retirement",
+      "OTHER": "Other"
+    }
+  }
+}

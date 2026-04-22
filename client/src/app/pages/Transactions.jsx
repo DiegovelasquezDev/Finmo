@@ -409,8 +409,14 @@ export default function Transactions() {
                 <tbody>
                   {txs.length === 0 ? (
                     <tr><td colSpan={5} className="px-5 py-12 text-center text-sm text-[var(--fg-muted)]">
+                      <span className="text-4xl block mb-3">💸</span>
                       <p className="font-medium">{t('app.transactions.empty')}</p>
                       <p className="text-xs mt-1">{t('app.transactions.emptyDesc')}</p>
+                      <button onClick={() => { setEditTx(null); setShowModal(true) }}
+                        className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--accent)] text-white text-xs font-semibold hover:opacity-90 transition-opacity">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        {t('app.transactions.addBtn')}
+                      </button>
                     </td></tr>
                   ) : txs.map(tx => (
                     <tr key={tx.id} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--surface-raised)] transition-colors group">
@@ -457,8 +463,14 @@ export default function Transactions() {
             <div className="sm:hidden divide-y divide-[var(--border)]">
               {txs.length === 0 ? (
                 <div className="py-12 text-center text-sm text-[var(--fg-muted)]">
+                  <span className="text-4xl block mb-3">💸</span>
                   <p className="font-medium">{t('app.transactions.empty')}</p>
                   <p className="text-xs mt-1">{t('app.transactions.emptyDesc')}</p>
+                  <button onClick={() => { setEditTx(null); setShowModal(true) }}
+                    className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--accent)] text-white text-xs font-semibold hover:opacity-90 transition-opacity">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    {t('app.transactions.addBtn')}
+                  </button>
                 </div>
               ) : txs.map(tx => (
                 <div key={tx.id} className="flex items-center gap-3 px-4 py-3.5">
